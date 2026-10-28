@@ -12,10 +12,18 @@ TYPE_NAMES = {'F1:main': 'tree', 'F1:major': 'post', 'F2:major': 'loop', 'F3:maj
               'F4:main': 'deck', 'F4:major': 'cap'}
 
 
-def part_of_face(comp, types):
-    """Per face: part type name ('tree', 'post', ...) or '' for slivers/dropped."""
-    out = np.array([TYPE_NAMES.get(types.get(int(c), ''), '') for c in comp], dtype=object)
-    return out
+def part_of_face(comp, types, names=None):
+    """Per face: part type name or '' for slivers/dropped. names maps the
+    simulator's type keys ('F1:main', ...) to display names; the Top names
+    (tree, post, loop, rail, deck, cap) are the default and only make sense
+    on Top -- on another model pass names={} to keep the raw keys. Minor
+    (sliver) types are always ''."""
+    names = TYPE_NAMES if names is None else names
+    out = []
+    for c in comp:
+        t = types.get(int(c), '')
+        out.append('' if (t == '' or t.endswith(':minor')) else names.get(t, t))
+    return np.array(out, dtype=object)
 
 
 class Junctions:

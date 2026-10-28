@@ -1,0 +1,48 @@
+##### BASE seed mode (final method), save
+draw 0: 21 rounds; raw overall 56.2 -> 68.8; with rule 56.2 -> 68.8; per update: click 0.21s + solve 0.65s; wrong area still in clicked regions 21.4%
+draw 1: 21 rounds; raw overall 25.2 -> 55.3; with rule 25.2 -> 55.3; per update: click 0.20s + solve 0.61s; wrong area still in clicked regions 19.5%
+draw 2: 21 rounds; raw overall 69.7 -> 74.3; with rule 69.7 -> 74.3; per update: click 0.15s + solve 0.64s; wrong area still in clicked regions 19.1%
+draw 3: 21 rounds; raw overall 60.5 -> 68.6; with rule 60.5 -> 68.6; per update: click 0.14s + solve 0.54s; wrong area still in clicked regions 27.1%
+draw 4: 21 rounds; raw overall 46.7 -> 88.5; with rule 46.7 -> 88.5; per update: click 0.24s + solve 0.60s; wrong area still in clicked regions 0.0%
+  7 clicks:  51.67/ 25.25 |  62.7  10.5  15.6   4.9 |   4.9/  0.1
+ 27 clicks:  71.08/ 55.29 |  83.4   7.4  34.4   9.6 |   7.4/  2.7
+clicks to overall >= 90: per draw [None, None, None, None, None]; mean n/a, worst n/a (0/5 draws reach it)
+  7 clicks:  51.67/ 25.25 |  62.7  10.5  15.6   4.9 |   4.9/  0.1
+ 27 clicks:  71.09/ 55.29 |  83.4   7.4  34.4   9.6 |   7.4/  2.7
+clicks to overall >= 90: per draw [None, None, None, None, None]; mean n/a, worst n/a (0/5 draws reach it)
+  7 clicks: 
+ 27 clicks: 
+##### BASE full mesh + export (best draw 4, no refinement)
+transfer 4s
+
+=== 1a transferred (closest decimated face)
+overall agreement: 88.60%  (area-weighted)
+candidate->ref mapping: {0: 0, 1: 1, 2: 2, 3: 3}
+section                       area%     IoU  recall    prec
+F1                            63.05   87.22   88.12   98.84
+F2                             3.38   16.42   19.84   48.85
+F3                            32.23   80.57   99.42   80.95
+F4                             1.35    8.69   24.84   11.79
+full cut 5s, changed 0.11% of faces
+
+=== 1a after full-mesh cut
+overall agreement: 88.61%  (area-weighted)
+candidate->ref mapping: {0: 0, 1: 1, 2: 2, 3: 3}
+section                       area%     IoU  recall    prec
+F1                            63.05   87.23   88.13   98.84
+F2                             3.38   16.34   19.72   48.79
+F3                            32.23   80.56   99.42   80.95
+F4                             1.35    8.67   24.78   11.77
+
+exported out/base_autocolor.3mf (60.2 MB)
+
+=== 1c re-read export
+overall agreement: 88.61%  (area-weighted)
+candidate->ref mapping: {0: 0, 1: 1, 2: 2, 3: 3}
+section                       area%     IoU  recall    prec
+F1                            63.05   87.23   88.13   98.84
+F2                             3.38   16.34   19.72   48.79
+F3                            32.23   80.56   99.42   80.95
+F4                             1.35    8.67   24.78   11.77
+export round-trip: identical strings, VERIFIED
+wrote reports/phase3_base_preview.png

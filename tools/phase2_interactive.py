@@ -29,14 +29,18 @@ ap.add_argument('--reach', type=float, default=80.0, help='geodesic reach (mm) o
 ap.add_argument('--gate', type=float, default=1.5, help='feature gate (std) for a corrective click to claim look-alike faces within reach; 0 = off')
 ap.add_argument('--prims', type=float, default=0.0, help='use fitted primitives as click-labeled seeds with this unary strength (0 = off, 50 = hard)')
 ap.add_argument('--tag', default='')
+ap.add_argument('--prim-mode', default='seed', choices=['seed', 'link'])
+ap.add_argument('--link-w', type=float, default=2.0)
+ap.add_argument('--model', default='top', help='top or base: which out/<model>_* files to use')
 args = ap.parse_args()
 
-dd = np.load('out/top_dec100k.npz'); V2, T2 = dd['V'], dd['T']
-tr = np.load('out/top_dec100k_truth.npz'); M2, A2 = tr['M'], tr['areas']
+MD = args.model
+dd = np.load(f'out/{MD}_dec100k.npz'); V2, T2 = dd['V'], dd['T']
+tr = np.load(f'out/{MD}_dec100k_truth.npz'); M2, A2 = tr['M'], tr['areas']
 truth2 = M2.argmax(1) + 1
-X = np.load('out/top_dec100k_features.npz')['X']
-d = np.load('out/top_truth.npz'); A, V, T = d['areas'], d['V'], d['T']; C_full = V[T].mean(1)
-rg = np.load('out/top_regions.npz'); comp, hops, table = rg['comp'], rg['hops'], rg['table']
+X = np.load(f'out/{MD}_dec100k_features.npz')['X']
+d = np.load(f'out/{MD}_truth.npz'); A, V, T = d['areas'], d['V'], d['T']; C_full = V[T].mean(1)
+rg = np.load(f'out/{MD}_regions.npz'); comp, hops, table = rg['comp'], rg['hops'], rg['table']
 tbl = [dict(id=int(a), label=int(b), area=float(c), n_faces=int(d)) for a, b, c, d in table]
 k = M2.shape[1]; names = [f'F{i + 1}' for i in range(k)]
 cols = [j for j in range(len(NAMES)) if not (args.no_height and NAMES[j] == 'height')]
@@ -57,7 +61,7 @@ print(f'setup {time.time() - t0:.0f}s; bottom surface: {bottom.sum()} faces, {10
 from autocolor.clicks import part_types  # noqa: E402
 from autocolor.junction import Junctions, part_of_face, format_junctions  # noqa: E402
 types = part_types(tbl)
-part = part_of_face(comp[dd['src']], types)
+part = part_of_face(comp[dd['src']], types, names=None if MD == 'top' else {})
 J = Junctions(graph, V2, part, truth2)
 FOCUS = ['post - rail', 'loop - post', 'loop - rail']
 prims = None
@@ -79,7 +83,7 @@ for draw in range(args.draws):
     clicks2 = clicks_to_mesh(sample_clicks_condition(comp, tbl, hops, C_full, A, args.start, rng), C_full, graph)
     sess = InteractiveSession(graph, X[:, cols], nm, k)
     if prims is not None:
-        sess.set_primitives(prims, owner, strength=args.prims)
+        sess.set_primitives(prims, owner, strength=args.prims, mode=args.prim_mode, link_w=args.link_w)
     for f, l in clicks2:
         sess.add_click(f, l)
     rows_raw, rows_rule = [], []
@@ -106,7 +110,7 @@ for draw in range(args.draws):
     curves['raw'].append(np.array(rows_raw)); curves['rule'].append(np.array(rows_rule))
     junctions.append(junc)
     if args.save:
-        np.savez_compressed(f'out/interactive_draw{draw}.npz', labels=lab, labels_rule=lab_rule, clicks=np.array(sess.seeds), click_labels=np.array(sess.seed_lab))
+        np.savez_compressed(f'out/{MD if MD != "top" else ""}{"_" if MD != "top" else ""}interactive_draw{draw}.npz', labels=lab, labels_rule=lab_rule, clicks=np.array(sess.seeds), click_labels=np.array(sess.seed_lab))
 
 start_n = len(clicks2)
 for tag in ('raw', 'rule'):

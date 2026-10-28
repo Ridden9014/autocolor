@@ -1,0 +1,23 @@
+base: 1000946 tris, paint {'n': 1000946, 'distinct': 18072, 'unparsable': 0, 'painted': 446353, 'split_tris': 30418, 'max_depth': 11, 'max_state': 4}, area % per filament [65.09  3.2  30.44  1.27], 3s
+invisible: 37574 faces, 5.640% area
+decimated 100000 tris, 17s; decimated-space ceiling (majority): overall 99.1 IoU 99.1 87.5 97.5 92.9
+features 15s
+regions >= 20 mm2: 96; part types: {'F1:main': 1, 'F1:major': 12, 'F2:main': 1, 'F2:major': 7, 'F2:minor': 8, 'F3:main': 1, 'F3:major': 1, 'F3:minor': 51, 'F4:major': 2, 'F4:minor': 12}
+  F1: 13 regions, areas: [103555, 787, 787, 785, 784, 784, 782, 782, 782, 780]...
+  F2: 16 regions, areas: [1629, 782, 508, 420, 381, 360, 338, 207, 163, 163]...
+  F3: 53 regions, areas: [47491, 3598, 55, 46, 44, 44, 44, 43, 43, 43]...
+  F4: 14 regions, areas: [471, 443, 116, 110, 109, 107, 107, 107, 106, 106]...
+primitives 13 in 6s, claimed 41% of area
+   0 slab thick 9.2            49761 mm2  truth F1:7% F2:11% F3:82% F4:0%
+   1 cyl  r 7.6 h 34            1424 mm2  truth F1:100% F2:0% F3:0% F4:0%
+   2 cyl  r 12.5 h 93           2791 mm2  truth F1:100% F2:0% F3:0% F4:0%
+   3 cyl  r 10.9 h 114          2672 mm2  truth F1:100% F2:0% F3:0% F4:0%
+   4 cyl  r 14.2 h 62           2455 mm2  truth F1:97% F2:0% F3:0% F4:3%
+   5 cyl  r 9.7 h 42            1554 mm2  truth F1:100% F2:0% F3:0% F4:0%
+   6 cyl  r 11.7 h 48           1713 mm2  truth F1:100% F2:0% F3:0% F4:0%
+   7 cyl  r 9.4 h 21            1138 mm2  truth F1:100% F2:0% F3:0% F4:0%
+   8 cyl  r 7.1 h 61            1664 mm2  truth F1:97% F2:0% F3:0% F4:3%
+   9 cyl  r 12.8 h 123          2322 mm2  truth F1:100% F2:0% F3:0% F4:0%
+  10 cyl  r 14.0 h 125          2588 mm2  truth F1:100% F2:0% F3:0% F4:0%
+  11 cyl  r 14.2 h 77           1618 mm2  truth F1:100% F2:0% F3:0% F4:0%
+  12 cyl  r 7.3 h 138           1884 mm2  truth F1:98% F2:0% F3:2% F4:1%

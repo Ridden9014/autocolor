@@ -1,11 +1,12 @@
 # STATUS
 
-**Phase:** 2 method search **STOPPED by the stop rule** (`reports/phase2_checkpoint_D_linking.md`): at 20
-clicks loops IoU 82.6 (< 95), rails 58.4 (< 75), junction wrong-area 3-6 points better than baseline, misplaced
-boundary unchanged. Best method = per_type clicks + fitted primitives (slab / cylinders / rail boxes, soft seeds) +
-bottom rule + local corrections: 91.9 mean / 90.8 worst at 20 clicks, all draws >= 90 by 13 clicks (mean 8.8).
-Next: Phase 3 with this method + slicer touch-up (plan first). Earlier checkpoints:
-(`reports/phase2_checkpoint_C2_interactive.md`). Click-and-correct from per_type: 88.6 -> 91.7 (raw) over 34
+**Phase:** 3, part 1 done; **checkpoint 1 for review before any UI work** (`reports/phase3_checkpoint1.md`).
+Top on the full mesh: 93.3 overall (F1 90 / F2 86 / F3 69 / F4 89), exported to `out/top_autocolor.3mf` (copy of
+the painted project, Top paint_color replaced, round-trip verified; needs a Bambu Studio open-check by the user).
+Sub-triangle refinement does not help with per-face labels (-0.2), export is whole-triangle. **Base (held out):
+71.1 mean / 55 worst at 27 clicks, best draw 88.6 on the full mesh** (F1 87, F2 16, F3 81, F4 9); the engraved
+inlay (F2) and bark-textured caps (F4) are out of reach for shape features; nothing tuned on Base.
+Phase 2 method search was stopped by the stop rule (`reports/phase2_checkpoint_D_linking.md`). Click-and-correct from per_type: 88.6 -> 91.7 (raw) over 34
 corrections, clicks-to-90 mean 20 / worst 37 (1 of 5 draws never), 95 never reached, rails stuck ~55.
 0.24 s per click on the 100k copy; ~6-12 s estimated on the full mesh. Bottom-surface rule (down-facing, nothing
 below, label from the surface above through the solid within 7 mm; orientation-flagged) costs nothing on the truth
@@ -64,6 +65,10 @@ Top is solid (not hollow, VERIFIED); invisible faces 0.053 % of area.
 - `autocolor/primitives.py`: RANSAC slab / cylinders / rail boxes (`fit_all`), claims + core masks.
   `autocolor/junction.py`: part-pair junction metric (wrong area in 3 mm zone, misplaced boundary length).
   `tools/phase2_interactive.py --prims 4` runs the final method; junction numbers printed at 6 and 20 clicks.
+- `autocolor/fullmesh.py`: `full_cut`, `refine_boundaries`, `export_project` (writes a project copy to out/).
+  `tools/phase3_fullmesh.py --model top|base --labels <npz> [--no-refine]`: transfer -> cut -> (refine) -> export
+  -> re-read check. `tools/phase3_base_prep.py`: all out/base_* inputs. `phase2_interactive.py --model base`.
+  `interactive.py set_primitives(mode='link')`: primitives as same-label links (tested, not adopted).
 - `tools/phase2_seeded.py`: score table runner (`--conditions`, `--draws`, `--height`, `--save-best`,
   hyper-parameters), writes `out/seeded_<cond>_<height>.npz`.
 - `tools/phase2_oracle.py`: oracle ceilings (~13 min). `out/top_visible.npy`, `out/top_regions.npz`,
@@ -89,6 +94,6 @@ F1 dark red = tree AND posts (two distinct parts, one colour). F2 grey = railing
 - Scorer assumes product coupling when both sides are fractional; exact only for whole-triangle candidates.
 
 ## Next step
-Phase 3 plan (wait for approval): full-mesh transfer of the decimated labels + sub-triangle refinement (step F),
-3MF export with per-triangle paint_color in the user's filament numbering, Base run (held out, first look), and a
-slicer touch-up workflow for rail-loop junctions. Method hyper-parameters are tuned on Top (flagged throughout).
+Checkpoint 1 review. If approved: Phase 3 part 2, the PyVista + Qt click tool (100k display, pre-placed primitive
+widgets, brush/nudge, evaluate a full-resolution junction patch else 200k display, export to out/). Then part 3,
+the timed benchmark. Method hyper-parameters are tuned on Top (flagged throughout).

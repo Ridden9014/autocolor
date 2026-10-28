@@ -1,0 +1,46 @@
+transfer 1s
+
+=== 1a transferred (closest decimated face)
+overall agreement: 93.41%  (area-weighted)
+candidate->ref mapping: {0: 0, 1: 1, 2: 2, 3: 3}
+section                       area%     IoU  recall    prec
+F1                            38.79   90.54   94.96   95.12
+F2                            17.00   86.15   94.00   91.16
+F3                             6.19   69.03   84.67   78.89
+F4                            38.02   88.90   92.99   95.29
+full cut 2s, changed 0.08% of faces
+
+=== 1a after full-mesh cut
+overall agreement: 93.46%  (area-weighted)
+candidate->ref mapping: {0: 0, 1: 1, 2: 2, 3: 3}
+section                       area%     IoU  recall    prec
+F1                            38.79   90.58   94.97   95.14
+F2                            17.00   86.37   94.10   91.32
+F3                             6.19   69.11   84.57   79.08
+F4                            38.02   88.98   93.08   95.28
+  refined 10000/40205 boundary triangles, 6045 split, 32s
+  refined 20000/40205 boundary triangles, 12260 split, 66s
+  refined 30000/40205 boundary triangles, 18459 split, 95s
+  refined 40000/40205 boundary triangles, 24506 split, 127s
+  boundary triangles 40205, split 24636, 127s
+
+=== 1b after sub-triangle refinement depth 2
+overall agreement: 93.29%  (area-weighted)
+candidate->ref mapping: {0: 0, 1: 1, 2: 2, 3: 3}
+section                       area%     IoU  recall    prec
+F1                            38.79   90.27   95.00   94.78
+F2                            17.00   86.16   94.16   91.03
+F3                             6.19   68.90   84.21   79.11
+F4                            38.02   88.60   92.63   95.32
+
+exported out/top_autocolor.3mf (60.4 MB)
+
+=== 1c re-read export
+overall agreement: 93.29%  (area-weighted)
+candidate->ref mapping: {0: 0, 1: 1, 2: 2, 3: 3}
+section                       area%     IoU  recall    prec
+F1                            38.79   90.27   95.00   94.78
+F2                            17.00   86.16   94.16   91.03
+F3                             6.19   68.90   84.21   79.11
+F4                            38.02   88.60   92.63   95.32
+export round-trip: identical strings, VERIFIED

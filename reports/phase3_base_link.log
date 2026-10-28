@@ -1,0 +1,46 @@
+##### BASE link w=2
+draw 0: 21 rounds; raw overall 58.5 -> 64.0; with rule 58.5 -> 64.0; per update: click 0.13s + solve 1.22s; wrong area still in clicked regions 27.7%
+draw 1: 21 rounds; raw overall 21.6 -> 26.4; with rule 21.6 -> 26.4; per update: click 0.11s + solve 0.83s; wrong area still in clicked regions 2.0%
+draw 2: 21 rounds; raw overall 68.3 -> 70.3; with rule 68.3 -> 70.3; per update: click 0.24s + solve 1.22s; wrong area still in clicked regions 24.1%
+draw 3: 21 rounds; raw overall 60.1 -> 63.2; with rule 60.1 -> 63.2; per update: click 0.09s + solve 0.65s; wrong area still in clicked regions 29.3%
+draw 4: 21 rounds; raw overall 59.3 -> 65.3; with rule 59.3 -> 65.3; per update: click 0.12s + solve 1.18s; wrong area still in clicked regions 0.0%
+  7 clicks:  53.54/ 21.57 |  53.9   4.1  23.5   4.8 |   4.1/  0.1
+ 11 clicks:  54.66/ 22.35 |  55.3   4.2  23.8   5.4 |   4.2/  0.1
+ 17 clicks:  56.56/ 23.14 |  57.8   4.2  24.4   6.6 |   4.2/  0.1
+ 27 clicks:  57.82/ 26.36 |  59.6   4.3  24.6   7.6 |   4.3/  0.1
+clicks to overall >= 90: per draw [None, None, None, None, None]; mean n/a, worst n/a (0/5 draws reach it)
+  7 clicks:  53.54/ 21.57 |  53.9   4.1  23.5   4.8 |   4.1/  0.1
+ 11 clicks:  54.66/ 22.35 |  55.3   4.2  23.8   5.4 |   4.2/  0.1
+ 17 clicks:  56.56/ 23.14 |  57.8   4.2  24.4   6.6 |   4.2/  0.1
+ 27 clicks:  57.82/ 26.36 |  59.6   4.3  24.6   7.6 |   4.3/  0.1
+clicks to overall >= 90: per draw [None, None, None, None, None]; mean n/a, worst n/a (0/5 draws reach it)
+=== junctions (with rule): wrong area % in 3 mm zone and misplaced boundary mm, mean / worst over draws
+  7 clicks: loop - post: wrong 58.6/68.0% misplaced 153/233mm | loop - rail: wrong 66.0/97.5% misplaced 823/843mm
+            cap - tree: wrong 49.0% misplaced 303mm | loop - tree: wrong 57.7% misplaced 327mm | rail - tree: wrong 66.4% misplaced 188mm
+ 20 clicks: loop - post: wrong 55.5/65.8% misplaced 116/233mm | loop - rail: wrong 78.5/97.6% misplaced 817/836mm
+            cap - tree: wrong 48.2% misplaced 304mm | loop - tree: wrong 57.7% misplaced 297mm | rail - tree: wrong 61.5% misplaced 165mm
+ 27 clicks: loop - post: wrong 58.6/68.0% misplaced 153/233mm | loop - rail: wrong 65.8/97.1% misplaced 818/836mm
+            cap - tree: wrong 48.2% misplaced 304mm | loop - tree: wrong 57.6% misplaced 327mm | rail - tree: wrong 65.8% misplaced 186mm
+##### BASE link w=4
+draw 0: 21 rounds; raw overall 58.5 -> 64.3; with rule 58.5 -> 64.3; per update: click 0.13s + solve 1.11s; wrong area still in clicked regions 28.4%
+draw 1: 21 rounds; raw overall 21.5 -> 26.2; with rule 21.5 -> 26.2; per update: click 0.23s + solve 1.62s; wrong area still in clicked regions 68.3%
+draw 2: 21 rounds; raw overall 68.2 -> 68.8; with rule 68.2 -> 68.8; per update: click 0.29s + solve 1.61s; wrong area still in clicked regions 24.9%
+draw 3: 21 rounds; raw overall 60.0 -> 64.1; with rule 60.0 -> 64.1; per update: click 0.16s + solve 1.22s; wrong area still in clicked regions 30.2%
+draw 4: 21 rounds; raw overall 59.1 -> 73.2; with rule 59.1 -> 73.2; per update: click 0.15s + solve 1.30s; wrong area still in clicked regions 0.2%
+  7 clicks:  53.48/ 21.55 |  53.8   3.9  23.4   4.8 |   3.9/  0.0
+ 11 clicks:  54.97/ 22.33 |  55.7   4.0  23.9   5.7 |   4.0/  0.0
+ 17 clicks:  56.63/ 23.23 |  53.2   2.1  24.2   7.1 |   2.1/  0.0
+ 27 clicks:  59.31/ 26.21 |  57.1   2.2  24.3   7.5 |   2.2/  0.0
+clicks to overall >= 90: per draw [None, None, None, None, None]; mean n/a, worst n/a (0/5 draws reach it)
+  7 clicks:  53.48/ 21.55 |  53.8   3.9  23.4   4.8 |   3.9/  0.0
+ 11 clicks:  54.97/ 22.33 |  55.7   4.0  23.9   5.7 |   4.0/  0.0
+ 17 clicks:  56.63/ 23.23 |  53.2   2.1  24.2   7.1 |   2.1/  0.0
+ 27 clicks:  59.31/ 26.21 |  57.1   2.2  24.3   7.5 |   2.2/  0.0
+clicks to overall >= 90: per draw [None, None, None, None, None]; mean n/a, worst n/a (0/5 draws reach it)
+=== junctions (with rule): wrong area % in 3 mm zone and misplaced boundary mm, mean / worst over draws
+  7 clicks: 
+            F1:main - F2:main: wrong 64.6% misplaced 10mm | F1:main - F2:major: wrong 57.7% misplaced 327mm | F1:main - F3:main: wrong 65.9% misplaced 47mm | F1:main - F3:major: wrong 66.4% misplaced 188mm | F1:main - F4:major: wrong 49.1% misplaced 307mm | F1:major - F2:main: wrong 63.6% misplaced 204mm | F1:major - F2:major: wrong 59.0% misplaced 153mm | F1:major - F3:main: wrong 49.0% misplaced 1525mm | F2:main - F3:main: wrong 70.7% misplaced 721mm | F2:main - F3:major: wrong 70.2% misplaced 289mm | F2:major - F3:main: wrong 68.7% misplaced 467mm | F2:major - F3:major: wrong 66.5% misplaced 815mm
+ 20 clicks: 
+            F1:main - F2:main: wrong 59.9% misplaced 8mm | F1:main - F2:major: wrong 57.7% misplaced 297mm | F1:main - F3:main: wrong 63.2% misplaced 41mm | F1:main - F3:major: wrong 61.5% misplaced 165mm | F1:main - F4:major: wrong 48.3% misplaced 309mm | F1:major - F2:main: wrong 58.6% misplaced 164mm | F1:major - F2:major: wrong 55.9% misplaced 115mm | F1:major - F3:main: wrong 46.8% misplaced 1430mm | F2:main - F3:main: wrong 77.8% misplaced 712mm | F2:main - F3:major: wrong 77.2% misplaced 280mm | F2:major - F3:main: wrong 74.3% misplaced 442mm | F2:major - F3:major: wrong 79.0% misplaced 812mm
+ 27 clicks: 
+            F1:main - F2:main: wrong 59.9% misplaced 8mm | F1:main - F2:major: wrong 57.7% misplaced 297mm | F1:main - F3:main: wrong 63.2% misplaced 41mm | F1:main - F3:major: wrong 61.5% misplaced 165mm | F1:main - F4:major: wrong 45.3% misplaced 306mm | F1:major - F2:main: wrong 58.6% misplaced 164mm | F1:major - F2:major: wrong 55.4% misplaced 115mm | F1:major - F3:main: wrong 46.5% misplaced 1425mm | F2:main - F3:main: wrong 77.8% misplaced 713mm | F2:main - F3:major: wrong 77.1% misplaced 278mm | F2:major - F3:main: wrong 74.3% misplaced 442mm | F2:major - F3:major: wrong 78.9% misplaced 808mm

@@ -1,0 +1,63 @@
+##### TOP link w=1
+draw 0: 15 rounds; raw overall 91.4 -> 93.2; with rule 91.4 -> 93.1; per update: click 0.19s + solve 1.35s; wrong area still in clicked regions 0.0%
+draw 1: 15 rounds; raw overall 91.5 -> 93.1; with rule 91.5 -> 93.0; per update: click 0.20s + solve 1.72s; wrong area still in clicked regions 0.0%
+draw 2: 15 rounds; raw overall 89.6 -> 90.8; with rule 89.6 -> 90.8; per update: click 0.18s + solve 1.31s; wrong area still in clicked regions 1.6%
+draw 3: 15 rounds; raw overall 90.1 -> 89.9; with rule 90.1 -> 89.9; per update: click 0.16s + solve 0.90s; wrong area still in clicked regions 0.0%
+draw 4: 15 rounds; raw overall 90.2 -> 91.0; with rule 90.2 -> 91.0; per update: click 0.30s + solve 1.53s; wrong area still in clicked regions 0.0%
+  6 clicks:  90.54/ 89.56 |  87.0  83.7  42.2  84.9 |  42.2/ 20.1
+ 10 clicks:  90.90/ 90.15 |  88.1  82.9  44.3  85.6 |  44.3/ 27.3
+ 14 clicks:  90.98/ 89.69 |  88.4  81.3  48.4  86.1 |  48.4/ 32.0
+ 20 clicks:  91.61/ 89.94 |  88.8  83.3  51.9  86.8 |  51.9/ 36.3
+clicks to overall >= 90: per draw [np.int64(6), np.int64(6), np.int64(10), np.int64(6), np.int64(6)]; mean 6.8, worst 10 (5/5 draws reach it)
+  6 clicks:  90.54/ 89.56 |  87.0  83.6  42.2  84.9 |  42.2/ 20.1
+ 10 clicks:  90.89/ 90.15 |  88.1  82.9  44.3  85.6 |  44.3/ 27.3
+ 14 clicks:  90.98/ 89.69 |  88.4  81.3  48.4  86.1 |  48.4/ 32.0
+ 20 clicks:  91.60/ 89.94 |  88.8  83.3  51.9  86.7 |  51.9/ 36.3
+clicks to overall >= 90: per draw [np.int64(6), np.int64(6), np.int64(10), np.int64(6), np.int64(6)]; mean 6.8, worst 10 (5/5 draws reach it)
+=== junctions (with rule): wrong area % in 3 mm zone and misplaced boundary mm, mean / worst over draws
+  6 clicks: post - rail: wrong 30.1/38.1% misplaced 366/433mm | loop - post: wrong 27.3/40.1% misplaced 577/684mm | loop - rail: wrong 28.9/35.8% misplaced 2864/3797mm
+            cap - post: wrong 55.9% misplaced 551mm | deck - post: wrong 34.0% misplaced 890mm | deck - rail: wrong 33.3% misplaced 1783mm | deck - tree: wrong 36.3% misplaced 598mm
+ 20 clicks: post - rail: wrong 28.5/38.3% misplaced 381/421mm | loop - post: wrong 26.7/41.0% misplaced 597/678mm | loop - rail: wrong 24.5/34.3% misplaced 3022/3692mm
+            cap - post: wrong 55.9% misplaced 551mm | deck - post: wrong 33.0% misplaced 897mm | deck - rail: wrong 27.0% misplaced 1915mm | deck - tree: wrong 29.6% misplaced 559mm
+##### TOP link w=2
+draw 0: 15 rounds; raw overall 91.2 -> 91.7; with rule 91.2 -> 91.7; per update: click 0.31s + solve 2.12s; wrong area still in clicked regions 0.0%
+draw 1: 15 rounds; raw overall 91.0 -> 91.4; with rule 91.0 -> 91.4; per update: click 0.34s + solve 1.93s; wrong area still in clicked regions 0.0%
+draw 2: 15 rounds; raw overall 89.4 -> 89.1; with rule 89.4 -> 89.1; per update: click 0.28s + solve 1.58s; wrong area still in clicked regions 1.7%
+draw 3: 15 rounds; raw overall 89.6 -> 89.4; with rule 89.6 -> 89.4; per update: click 0.25s + solve 1.87s; wrong area still in clicked regions 0.0%
+draw 4: 15 rounds; raw overall 90.0 -> 90.3; with rule 90.0 -> 90.3; per update: click 0.31s + solve 1.71s; wrong area still in clicked regions 0.0%
+  6 clicks:  90.23/ 89.38 |  86.8  81.3  41.6  84.9 |  41.6/ 19.4
+ 10 clicks:  90.30/ 89.45 |  87.0  81.3  41.6  85.1 |  41.6/ 19.4
+ 14 clicks:  90.22/ 89.45 |  87.2  80.4  40.7  85.2 |  40.7/ 19.4
+ 20 clicks:  90.36/ 89.10 |  87.5  80.0  45.5  85.3 |  45.5/ 26.2
+clicks to overall >= 90: per draw [np.int64(6), np.int64(6), None, None, np.int64(7)]; mean 6.333333333333333, worst 7 (3/5 draws reach it)
+  6 clicks:  90.22/ 89.38 |  86.8  81.2  41.6  84.9 |  41.6/ 19.4
+ 10 clicks:  90.30/ 89.45 |  87.0  81.3  41.6  85.1 |  41.6/ 19.4
+ 14 clicks:  90.21/ 89.45 |  87.2  80.4  40.7  85.2 |  40.7/ 19.4
+ 20 clicks:  90.36/ 89.10 |  87.5  80.0  45.5  85.3 |  45.5/ 26.2
+clicks to overall >= 90: per draw [np.int64(6), np.int64(6), None, None, np.int64(7)]; mean 6.333333333333333, worst 7 (3/5 draws reach it)
+=== junctions (with rule): wrong area % in 3 mm zone and misplaced boundary mm, mean / worst over draws
+  6 clicks: post - rail: wrong 31.8/39.3% misplaced 436/479mm | loop - post: wrong 28.6/39.7% misplaced 662/757mm | loop - rail: wrong 30.2/36.4% misplaced 3296/4209mm
+            cap - post: wrong 51.0% misplaced 587mm | deck - post: wrong 35.9% misplaced 1006mm | deck - rail: wrong 33.9% misplaced 1862mm | deck - tree: wrong 40.9% misplaced 689mm
+ 20 clicks: post - rail: wrong 31.9/39.2% misplaced 442/479mm | loop - post: wrong 28.9/39.6% misplaced 673/757mm | loop - rail: wrong 29.0/36.4% misplaced 3335/4209mm
+            cap - post: wrong 51.0% misplaced 587mm | deck - post: wrong 35.7% misplaced 1014mm | deck - rail: wrong 30.5% misplaced 1900mm | deck - tree: wrong 37.7% misplaced 695mm
+##### TOP link w=4
+draw 0: 15 rounds; raw overall 91.2 -> 91.0; with rule 91.2 -> 91.0; per update: click 0.24s + solve 1.59s; wrong area still in clicked regions 0.6%
+draw 1: 15 rounds; raw overall 90.9 -> 90.8; with rule 90.9 -> 90.8; per update: click 0.29s + solve 1.52s; wrong area still in clicked regions 0.0%
+draw 2: 15 rounds; raw overall 88.8 -> 88.9; with rule 88.8 -> 88.9; per update: click 0.27s + solve 1.34s; wrong area still in clicked regions 3.2%
+draw 3: 15 rounds; raw overall 89.3 -> 89.1; with rule 89.3 -> 89.1; per update: click 0.27s + solve 1.66s; wrong area still in clicked regions 0.6%
+draw 4: 15 rounds; raw overall 89.9 -> 90.2; with rule 89.9 -> 90.2; per update: click 0.31s + solve 1.87s; wrong area still in clicked regions 0.0%
+  6 clicks:  90.01/ 88.76 |  87.0  79.7  40.5  84.8 |  40.5/ 14.3
+ 10 clicks:  90.08/ 88.83 |  87.2  79.7  40.6  84.9 |  40.6/ 14.3
+ 14 clicks:  89.99/ 88.92 |  87.4  78.9  39.6  85.1 |  39.6/ 14.3
+ 20 clicks:  90.02/ 88.92 |  87.5  78.6  41.1  85.1 |  41.1/ 18.6
+clicks to overall >= 90: per draw [np.int64(6), np.int64(6), None, None, np.int64(8)]; mean 6.666666666666667, worst 8 (3/5 draws reach it)
+  6 clicks:  90.00/ 88.76 |  87.0  79.7  40.5  84.8 |  40.5/ 14.3
+ 10 clicks:  90.07/ 88.83 |  87.2  79.7  40.6  84.9 |  40.6/ 14.3
+ 14 clicks:  89.99/ 88.91 |  87.3  78.9  39.6  85.1 |  39.6/ 14.3
+ 20 clicks:  90.01/ 88.92 |  87.4  78.6  41.1  85.1 |  41.1/ 18.6
+clicks to overall >= 90: per draw [np.int64(6), np.int64(6), None, None, np.int64(8)]; mean 6.666666666666667, worst 8 (3/5 draws reach it)
+=== junctions (with rule): wrong area % in 3 mm zone and misplaced boundary mm, mean / worst over draws
+  6 clicks: post - rail: wrong 32.4/39.6% misplaced 455/490mm | loop - post: wrong 29.2/39.8% misplaced 686/755mm | loop - rail: wrong 31.5/40.5% misplaced 3522/4228mm
+            cap - post: wrong 49.7% misplaced 606mm | deck - post: wrong 36.5% misplaced 1072mm | deck - rail: wrong 34.9% misplaced 1864mm | deck - tree: wrong 41.0% misplaced 690mm
+ 20 clicks: post - rail: wrong 32.4/39.6% misplaced 459/510mm | loop - post: wrong 29.3/39.8% misplaced 695/755mm | loop - rail: wrong 32.0/39.5% misplaced 3696/4228mm
+            cap - post: wrong 49.7% misplaced 606mm | deck - post: wrong 36.4% misplaced 1075mm | deck - rail: wrong 33.3% misplaced 1914mm | deck - tree: wrong 38.1% misplaced 696mm

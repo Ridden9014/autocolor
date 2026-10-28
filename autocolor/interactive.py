@@ -26,15 +26,33 @@ class InteractiveSession:
         self.timings = []
         self.prims = None
 
-    def set_primitives(self, prims, owner, strength=4.0, propagate_kinds=('cyl', 'rail')):
-        """Fitted primitives (primitives.fit_all). A click inside a primitive
-        labels the whole primitive; unlabeled primitives of a kind in
-        propagate_kinds take the majority label of the clicked ones of that
-        kind. Claimed faces get a unary bonus `strength` for the primitive's
-        label (50 = hard)."""
+    def set_primitives(self, prims, owner, strength=4.0, propagate_kinds=('cyl', 'rail'), mode='seed',
+                       link_w=2.0, link_k=3, seed=0):
+        """Fitted primitives (primitives.fit_all).
+        mode='seed': a click inside a primitive labels the whole primitive
+          (majority of core clicks); unlabeled primitives of a kind in
+          propagate_kinds take the label of clicked ones of that kind; claimed
+          faces get a unary bonus `strength` (50 = hard).
+        mode='link': no voting. Each claimed face is linked to link_k random
+          other faces of the same primitive with Potts weight link_w x median
+          edge length, so a primitive strongly prefers one label; which label
+          is decided by the cut from clicks and prototypes as usual."""
         core_owner = prims[0]['core_owner'] if prims and 'core_owner' in prims[0] else owner
         self.prims = dict(kinds=[p['kind'] for p in prims], owner=owner, core_owner=core_owner,
-                          strength=strength, propagate=propagate_kinds)
+                          strength=strength, propagate=propagate_kinds, mode=mode)
+        if mode == 'link':
+            rng = np.random.default_rng(seed)
+            pairs = []
+            for i in range(len(prims)):
+                f = np.where(owner == i)[0]
+                if len(f) < 2:
+                    continue
+                for _ in range(link_k):
+                    pairs.append(np.c_[f, rng.permutation(f)])
+            pairs = np.concatenate(pairs)
+            pairs = pairs[pairs[:, 0] != pairs[:, 1]]
+            self.adj = np.r_[self.adj, pairs]
+            self.W = np.r_[self.W, np.full(len(pairs), link_w * np.median(self.graph.elen))]
 
     def primitive_labels(self):
         """A primitive's label is the majority of the clicks on its CORE faces
@@ -95,7 +113,7 @@ class InteractiveSession:
         P /= P.sum(1, keepdims=True)
         U = -np.log(np.clip(P, 1e-4, 1))
         U[:, [c for c in range(self.k) if c + 1 not in present]] = 50.0
-        if self.prims is not None:
+        if self.prims is not None and self.prims['mode'] == 'seed':
             owner, s = self.prims['owner'], self.prims['strength']
             for i, l in self.primitive_labels().items():
                 m = owner == i
