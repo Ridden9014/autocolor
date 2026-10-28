@@ -24,6 +24,37 @@ class InteractiveSession:
         self.seeds, self.seed_lab, self.clicks = [], [], []
         self.labels = None
         self.timings = []
+        self.prims = None
+
+    def set_primitives(self, prims, owner, strength=4.0, propagate_kinds=('cyl', 'rail')):
+        """Fitted primitives (primitives.fit_all). A click inside a primitive
+        labels the whole primitive; unlabeled primitives of a kind in
+        propagate_kinds take the majority label of the clicked ones of that
+        kind. Claimed faces get a unary bonus `strength` for the primitive's
+        label (50 = hard)."""
+        core_owner = prims[0]['core_owner'] if prims and 'core_owner' in prims[0] else owner
+        self.prims = dict(kinds=[p['kind'] for p in prims], owner=owner, core_owner=core_owner,
+                          strength=strength, propagate=propagate_kinds)
+
+    def primitive_labels(self):
+        """A primitive's label is the majority of the clicks on its CORE faces
+        (its own surface, not the fringe of its claim), earliest click breaking
+        ties. A click on the fringe, or a disagreeing correction, acts only
+        through its own hard patch."""
+        kinds, core_owner = self.prims['kinds'], self.prims['core_owner']
+        votes = {}
+        for f, l in self.clicks:
+            if core_owner[f] >= 0:
+                votes.setdefault(int(core_owner[f]), []).append(l)
+        lab = {i: max(dict.fromkeys(v), key=v.count) for i, v in votes.items()}
+        for kind in self.prims['propagate']:
+            got = [lab[i] for i in lab if kinds[i] == kind]
+            if got:
+                maj = max(set(got), key=got.count)
+                for i, kd in enumerate(kinds):
+                    if kd == kind and i not in lab:
+                        lab[i] = maj
+        return lab
 
     def add_click(self, face, label, reach=None, gate=None):
         """reach: geodesic radius (mm) within which this click's prototype
@@ -64,6 +95,12 @@ class InteractiveSession:
         P /= P.sum(1, keepdims=True)
         U = -np.log(np.clip(P, 1e-4, 1))
         U[:, [c for c in range(self.k) if c + 1 not in present]] = 50.0
+        if self.prims is not None:
+            owner, s = self.prims['owner'], self.prims['strength']
+            for i, l in self.primitive_labels().items():
+                m = owner == i
+                U[m, :] += s
+                U[m, l - 1] -= s
         seeds, sl = np.array(self.seeds), np.array(self.seed_lab)
         U[seeds, :] = 50.0
         U[seeds, sl - 1] = 0.0

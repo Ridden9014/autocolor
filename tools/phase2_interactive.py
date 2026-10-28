@@ -27,6 +27,8 @@ ap.add_argument('--no-height', action='store_true')
 ap.add_argument('--save', action='store_true')
 ap.add_argument('--reach', type=float, default=80.0, help='geodesic reach (mm) of corrective clicks; 0 = global')
 ap.add_argument('--gate', type=float, default=1.5, help='feature gate (std) for a corrective click to claim look-alike faces within reach; 0 = off')
+ap.add_argument('--prims', type=float, default=0.0, help='use fitted primitives as click-labeled seeds with this unary strength (0 = off, 50 = hard)')
+ap.add_argument('--tag', default='')
 args = ap.parse_args()
 
 dd = np.load('out/top_dec100k.npz'); V2, T2 = dd['V'], dd['T']
@@ -52,6 +54,18 @@ above = above_through_solid(graph, V2, T2, bottom)
 print(f'setup {time.time() - t0:.0f}s; bottom surface: {bottom.sum()} faces, {100 * A2[bottom].sum() / A2.sum():.1f}% of area, '
       f'truth there: ' + ' '.join(f'F{f}:{100 * A2[bottom & (truth2 == f)].sum() / A2[bottom].sum():.0f}%' for f in range(1, k + 1))
       + f'; with a surface above within 12 mm: {100 * A2[bottom & (above >= 0)].sum() / A2[bottom].sum():.0f}% of bottom area')
+from autocolor.clicks import part_types  # noqa: E402
+from autocolor.junction import Junctions, part_of_face, format_junctions  # noqa: E402
+types = part_types(tbl)
+part = part_of_face(comp[dd['src']], types)
+J = Junctions(graph, V2, part, truth2)
+FOCUS = ['post - rail', 'loop - post', 'loop - rail']
+prims = None
+if args.prims > 0:
+    from autocolor.primitives import fit_all
+    t0 = time.time()
+    prims, owner = fit_all(graph, X, NAMES)
+    print(f'primitives: {len(prims)} fitted in {time.time() - t0:.0f}s ({sum(p["kind"] == "cyl" for p in prims)} cyl, {sum(p["kind"] == "rail" for p in prims)} rail); claimed {100 * A2[owner >= 0].sum() / A2.sum():.0f}% of area')
 rule_oracle = apply_bottom_rule(graph, truth2, bottom, above)
 print(f'rule applied to the TRUTH itself (its cost at best): overall {sc(rule_oracle)[0]:.2f}, IoU ' + ' '.join(f'{v:.1f}' for v in sc(rule_oracle)[1:]))
 
@@ -59,17 +73,23 @@ print(f'rule applied to the TRUTH itself (its cost at best): overall {sc(rule_or
 
 curves = {'raw': [], 'rule': []}
 timings = []
+junctions = []
 for draw in range(args.draws):
     rng = np.random.default_rng(100 + draw)
     clicks2 = clicks_to_mesh(sample_clicks_condition(comp, tbl, hops, C_full, A, args.start, rng), C_full, graph)
     sess = InteractiveSession(graph, X[:, cols], nm, k)
+    if prims is not None:
+        sess.set_primitives(prims, owner, strength=args.prims)
     for f, l in clicks2:
         sess.add_click(f, l)
     rows_raw, rows_rule = [], []
+    junc = {}
     for n_clicks in range(len(clicks2), args.max_clicks + 1):
         lab = sess.solve()
         lab_rule = apply_bottom_rule(graph, lab, bottom, above)
         rows_raw.append(sc(lab)); rows_rule.append(sc(lab_rule))
+        if n_clicks in (len(clicks2), 20, args.max_clicks):
+            junc[n_clicks] = J.score(lab_rule)
         if n_clicks == args.max_clicks:
             break
         nxt = largest_wrong_region(graph, lab_rule, truth2, A2, clicked=[f for f, _ in sess.clicks])
@@ -84,6 +104,7 @@ for draw in range(args.draws):
           f'with rule {rows_rule[0][0]:.1f} -> {rows_rule[-1][0]:.1f}; per update: click {np.mean(tc):.2f}s + solve {np.mean(ts):.2f}s; '
           f'wrong area still in clicked regions {100 * stuck_area / A2.sum():.1f}%')
     curves['raw'].append(np.array(rows_raw)); curves['rule'].append(np.array(rows_rule))
+    junctions.append(junc)
     if args.save:
         np.savez_compressed(f'out/interactive_draw{draw}.npz', labels=lab, labels_rule=lab_rule, clicks=np.array(sess.seeds), click_labels=np.array(sess.seed_lab))
 
@@ -110,5 +131,14 @@ for tag in ('raw', 'rule'):
         hit = np.where(c[:, 1:].min(1) >= 90)[0]
         per_draw.append(start_n + hit[0] if len(hit) else None)
     print(f'clicks to every section IoU >= 90: {per_draw}')
+print('\n=== junctions (with rule): wrong area % in 3 mm zone and misplaced boundary mm, mean / worst over draws')
+for nc in sorted({n for j in junctions for n in j}):
+    rows = [j[nc] for j in junctions if nc in j]
+    print(f'{nc:3d} clicks: ' + ' | '.join(
+        f"{t}: wrong {np.mean([r[t]['wrong_pct'] for r in rows]):.1f}/{np.max([r[t]['wrong_pct'] for r in rows]):.1f}% "
+        f"misplaced {np.mean([r[t]['misplaced_len'] for r in rows]):.0f}/{np.max([r[t]['misplaced_len'] for r in rows]):.0f}mm"
+        for t in FOCUS if t in rows[0]))
+    other = [t for t in rows[0] if t not in FOCUS]
+    print(f'            ' + ' | '.join(f"{t}: wrong {np.mean([r[t]['wrong_pct'] for r in rows]):.1f}% misplaced {np.mean([r[t]['misplaced_len'] for r in rows]):.0f}mm" for t in other))
 tc, ts = np.mean([t[0] for t in timings]), np.mean([t[1] for t in timings])
 print(f'\ntime per click update on 100k faces: {tc + ts:.2f}s (patch+density {tc:.2f}s, graph cut {ts:.2f}s)')

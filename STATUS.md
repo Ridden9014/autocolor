@@ -1,6 +1,10 @@
 # STATUS
 
-**Phase:** 2, step C + interactive curve run; **stopped for review, targets NOT met**
+**Phase:** 2 method search **STOPPED by the stop rule** (`reports/phase2_checkpoint_D_linking.md`): at 20
+clicks loops IoU 82.6 (< 95), rails 58.4 (< 75), junction wrong-area 3-6 points better than baseline, misplaced
+boundary unchanged. Best method = per_type clicks + fitted primitives (slab / cylinders / rail boxes, soft seeds) +
+bottom rule + local corrections: 91.9 mean / 90.8 worst at 20 clicks, all draws >= 90 by 13 clicks (mean 8.8).
+Next: Phase 3 with this method + slicer touch-up (plan first). Earlier checkpoints:
 (`reports/phase2_checkpoint_C2_interactive.md`). Click-and-correct from per_type: 88.6 -> 91.7 (raw) over 34
 corrections, clicks-to-90 mean 20 / worst 37 (1 of 5 draws never), 95 never reached, rails stuck ~55.
 0.24 s per click on the 100k copy; ~6-12 s estimated on the full mesh. Bottom-surface rule (down-facing, nothing
@@ -57,6 +61,9 @@ Top is solid (not hollow, VERIFIED); invisible faces 0.053 % of area.
 - `autocolor/interactive.py`: `InteractiveSession` (incremental clicks: patch hard seeds, per-click prototype
   with optional reach/gate, warm-started cut), `largest_wrong_region`. `autocolor/rules.py`: bottom surface
   detection + rule. `tools/phase2_interactive.py`: curve runner (`--draws`, `--max-clicks`, `--reach`, `--gate`).
+- `autocolor/primitives.py`: RANSAC slab / cylinders / rail boxes (`fit_all`), claims + core masks.
+  `autocolor/junction.py`: part-pair junction metric (wrong area in 3 mm zone, misplaced boundary length).
+  `tools/phase2_interactive.py --prims 4` runs the final method; junction numbers printed at 6 and 20 clicks.
 - `tools/phase2_seeded.py`: score table runner (`--conditions`, `--draws`, `--height`, `--save-best`,
   hyper-parameters), writes `out/seeded_<cond>_<height>.npz`.
 - `tools/phase2_oracle.py`: oracle ceilings (~13 min). `out/top_visible.npy`, `out/top_regions.npz`,
@@ -82,6 +89,6 @@ F1 dark red = tree AND posts (two distinct parts, one colour). F2 grey = railing
 - Scorer assumes product coupling when both sides are fractional; exact only for whole-triangle candidates.
 
 ## Next step
-Review of checkpoint C2. Proposed (held by decision until the curve was seen, now the recommended next step):
-texture-robust part linking (offset-surface / cone through-solid links; rails linked across width, not into the
-lattice), then re-run the interactive curve (3 min). E (caps) and F (full mesh) wait.
+Phase 3 plan (wait for approval): full-mesh transfer of the decimated labels + sub-triangle refinement (step F),
+3MF export with per-triangle paint_color in the user's filament numbering, Base run (held out, first look), and a
+slicer touch-up workflow for rail-loop junctions. Method hyper-parameters are tuned on Top (flagged throughout).
