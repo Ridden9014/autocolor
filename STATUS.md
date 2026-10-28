@@ -1,32 +1,42 @@
 # STATUS
 
-**Phase:** 0 complete (repo setup + input inventory). Phase 1 not started; awaiting plan approval.
-**Last score:** none yet (no scoring code).
-**Env:** Python 3.13.3, `.venv` (trimesh 5.2.0, numpy 2.5.4, scipy 1.18.1, open3d 0.20.0). `requirements.txt` unpinned.
+**Phase:** 1 complete (ground truth + scorer + baseline). Phase 2 not started; plan needed first.
+**Last score (PoC baseline, best mapping):** overall 83.70 %. Per-section IoU: F1 tree+posts 76.6, F2 loops 72.0,
+F3 rails 0.0, F4 deck 77.4. Details in `reports/phase1.md`.
+**Env:** Python 3.13.3, `.venv` (trimesh, numpy, scipy, open3d, matplotlib, pytest). `requirements.txt` unpinned.
 
-## Inputs (refs/)
-- `SD_RPG_TreetopDruidHavenDiceTower-Top.obj`: 500,088 verts, 1,000,954 tris. Bounds min (34.768, 64.485, 0) max (265.232, 235.515, 123.023); extents 230.465 x 171.029 x 123.023 mm. (VERIFIED)
-- `TreetopDruidHaven_painted.3mf` (BambuStudio 2.2.4), 3 objects, all with identity component transforms:
-  | obj (component) | name | tris | extents (local) | paint_color |
-  |---|---|---|---|---|
-  | 2 (1) | Top.stl | 1,000,954 | 230.465 x 171.029 x 123.023 | YES, 866,993 tris (86.6%) |
-  | 4 (3) | Base.stl | 1,000,946 | 187.5 x 181.83 x 160.41 | YES, 446,353 tris (44.6%) |
-  | 6 (5) | Base.stl | 1,000,793 | 187.5 x 181.83 x 160.41 | NO (0 tris) |
-  Files: `3D/Objects/...Top.stl_1.model`, `...Base.stl_2.model`, `...Base.stl_3.model`.
-- **Top-piece ground truth = object 2 / mesh id 1.** Triangle count identical to the OBJ and triangle order identical: same-index centroids match (max 8.7e-6 mm) after adding offset (150, 150, 61.5113) to the 3MF's local coords. So paint_color can be mapped to OBJ triangles by index. (VERIFIED)
-- Base: two copies; only object 4 is painted, object 6 is an unpainted duplicate. Base not needed unless we add it as a second test model.
-- Not decoded yet: paint_color strings -> sections/filaments (Phase 1).
-- `TreetopDruidHaven-Top_autocolor_poc.3mf`: PoC export, not inspected in Phase 0.
+## Inputs (refs/, gitignored, 111 MB; copy by hand on a new machine)
+- `SD_RPG_TreetopDruidHavenDiceTower-Top.obj`: 1,000,954 tris, extents 230.5 x 171.0 x 123.0 mm.
+- `TreetopDruidHaven_painted.3mf`: Bambu project, 4 filaments. Object 2 = Top (ground truth, index-aligned with the
+  OBJ after adding offset (150, 150, 61.5113)). Object 4 = Base (**held out**: parse only, never tune on it).
+  Object 6 = unpainted Base duplicate.
+- `TreetopDruidHaven-Top_autocolor_poc.3mf`: chat PoC export, whole-triangle, 4 labels.
 
-## Layout
-- `refs/` is gitignored (111 MB, third-party model; 60 MB 3MF is near GitHub limits). Not pushed; copy it manually on a new machine.
-- `poc/autocolor/`: PoC scripts, copied verbatim from refs. They read from `/mnt/user-data/uploads/...` (chat paths) and use model-specific seed coordinates; reference only.
-- `tools/phase0_inspect.py`: OBJ stats + 3MF object listing.
+## Code
+- `autocolor/paint.py`: paint_color decode/encode (tree form), area fractions per state, cached per distinct string.
+  Round-trip tested for states 0-40 and random split trees (`tests/test_paint.py`, 21 tests).
+  Encoder handles split trees already; geometry for emitting sub-triangle splits (which vertex order / special side
+  means what) is NOT implemented, Phase 2+.
+- `autocolor/truth.py`: `Project` (filament colours, objects, default extruder, mesh + paint per object),
+  `load_paint_3mf` for plain exports, `truth_matrix` -> (N, n_filaments) area matrix.
+- `autocolor/score.py`: overlap matrix, label mapping (`best` many-to-one headline, `one2one` Hungarian), per-section
+  IoU / recall / precision, overall agreement.
+- `autocolor/render.py`: open3d decimation + matplotlib 2-view preview.
+- `tools/phase1_report.py`: end-to-end; `--candidate path.3mf` scores any whole-triangle export.
+- Outputs in `out/` (gitignored): `top_truth.npz` (M, areas, V, T), `base_truth.npz`, `top_dec100k.npz`
+  (decimated copy + `src` index into full-mesh triangles), `top_truth_preview.png`.
 
-## Open problems (from CLAUDE.md)
-- Rails and loops in the railing must be separate sections.
-- Post color bleeds onto rail ends and deck edges.
-- Whole-triangle painting gives jagged boundaries on long triangles.
+## Sections on Top (see reports/phase1.md for the table)
+F1 dark red = tree AND posts (two distinct parts, one colour). F2 grey = railing loops. F3 yellow = rails
+(top/bottom bars). F4 tan = deck + cut ends of posts/branches. Unpainted 9 % of area -> default F1 (verified).
+
+## Open problems
+- PoC never separates rails (F3) from loops (F2): F3 IoU 0. Rails are only 6.2 % of area but 13.7 % of their area
+  is in brush-split triangles, so whole-triangle output will cap the rail score; sub-triangle output needed eventually.
+- PoC "frame+posts" label mixes posts (F1) with deck frame (F4): costs F1 recall (77) and F4 precision (78).
+- Whole-triangle painting makes jagged boundaries on long triangles (from CLAUDE.md).
+- Scorer assumes product coupling when both sides are fractional; exact only for whole-triangle candidates.
 
 ## Next step
-Phase 1 plan: decode paint_color from the painted Top -> per-section reference labels and a scorer (area-weighted per section). Plan first, wait for approval.
+Phase 2 plan: automatic sectioning of Top into tree+posts / loops / rails / deck that carries over to Base.
+Plan first, wait for approval.

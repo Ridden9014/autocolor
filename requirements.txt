@@ -2,3 +2,5 @@ trimesh
 numpy
 scipy
 open3d
+pytest
+matplotlib
