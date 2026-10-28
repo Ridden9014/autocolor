@@ -47,6 +47,57 @@ def boundary_hops(adj, labels, n):
     return dist
 
 
+def part_types(table, main_ratio=2.0, big_ratio=0.25):
+    """Assign each region a part-type string, used only by the click simulator
+    to express 'one click per kind of part'. FLAGGED model-specific grouping
+    by area: within a filament, the largest region is 'main' if it is >=
+    main_ratio x the second largest; of the remaining regions, those >=
+    big_ratio x the largest remaining are 'major', the rest 'minor' (slivers).
+    On Top: F1 main (tree) + 8 major (posts); F2 4 major (loop sides) + 4 minor;
+    F3 8 major (rails) + 3 minor; F4 main (deck) + 6 major (caps)."""
+    out = {}
+    for f in sorted({r['label'] for r in table}):
+        rs = sorted([r for r in table if r['label'] == f], key=lambda r: -r['area'])
+        if len(rs) == 1 or rs[0]['area'] >= main_ratio * rs[1]['area']:
+            out[rs[0]['id']] = f'F{f}:main'
+            rs = rs[1:]
+        if rs:
+            top = rs[0]['area']
+            for r in rs:
+                out[r['id']] = f'F{f}:major' if r['area'] >= big_ratio * top else f'F{f}:minor'
+    return out
+
+
+def _one_click(faces, hops, areas, rng):
+    w = areas[faces] * (hops[faces].astype(float) + 0.5) ** 2
+    return int(rng.choice(faces, p=w / w.sum()))
+
+
+def sample_clicks_condition(comp, table, hops, centers, areas, condition, rng):
+    """condition: 'per_region_1/2/3', 'per_filament' (one click in the largest
+    region of each filament), 'per_type' (one click in one randomly chosen
+    region of each part type, minor types excluded -- the question being
+    whether one post / one loop side / one cap labels all of them)."""
+    if condition.startswith('per_region_'):
+        return sample_clicks(comp, table, hops, centers, areas, int(condition[-1]), rng)
+    out = []
+    if condition == 'per_filament':
+        for f in sorted({r['label'] for r in table}):
+            r = max([r for r in table if r['label'] == f], key=lambda r: r['area'])
+            out.append((_one_click(np.where(comp == r['id'])[0], hops, areas, rng), f))
+    elif condition == 'per_type':
+        types = part_types(table)
+        for t in sorted(set(types.values())):
+            if t.endswith(':minor'):
+                continue  # slivers
+            rs = [r for r in table if types[r['id']] == t]
+            r = rs[rng.integers(len(rs))]
+            out.append((_one_click(np.where(comp == r['id'])[0], hops, areas, rng), r['label']))
+    else:
+        raise ValueError(condition)
+    return out
+
+
 def sample_clicks(comp, table, hops, centers, areas, n_clicks, rng, n_cand=64):
     """One draw: for each kept region, n_clicks faces. First click is drawn
     with weight area * hops^2 (interior bias); later clicks additionally

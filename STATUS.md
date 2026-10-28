@@ -1,6 +1,10 @@
 # STATUS
 
-**Phase:** 2, step A done (infrastructure + oracle ceilings); **stopped for review before step B** (features).
+**Phase:** 2, steps A and B done (infrastructure, oracle ceilings, features + separability);
+**stopped for review before step C** (seeded classifier + graph cut). Separability: `reports/phase2_checkpoint_B.md`.
+Combined features >= 0.99 AUC on every section pair with height, >= 0.92 without; rails/deck is 0.924 without
+height (tan_aniso, plan_12, curv_3 carry it), 0.995 with. Posts vs tree is the weak pair (0.92) but same filament.
+Caps: ext_12 / sph_12 ~0.98-1.0 vs deck and F1.
 Plan: A infra -> B features + separability table -> C seeded classifier + graph cut -> E cap detector ->
 F confirm on full mesh with sub-triangle refinement. D (automatic track) skipped by decision. Targets: overall >= 95,
 every IoU >= 90, scored identity (no mapping), invisible faces excluded.
@@ -32,6 +36,11 @@ Top is solid (not hollow, VERIFIED); invisible faces 0.053 % of area.
 - `autocolor/score.py` also: `score_paint` exact point-sampled scoring, `identity` mode.
 - `autocolor/transfer.py`: truth onto decimated mesh, labels back to full mesh (closest face).
 - `autocolor/clicks.py`: regions (>= 20 mm^2 components), boundary hops, click sampling. 35 regions on Top.
+- `autocolor/features.py`: 16 per-face features (through-cavity SDF, in-solid tangent extents, curvature,
+  PCA at 4/12 mm, height [FLAGGED]); 12 s on the 100k copy -> `out/top_dec100k_features.npz`.
+- `autocolor/clicks.py` also: `part_types` (simulator-only area grouping, FLAGGED), conditions per_region_1/2/3,
+  per_filament (4 clicks), per_type (6 clicks).
+- `tools/phase2_features.py`: separability table (`reports/phase2_separability.txt`).
 - `tools/phase2_oracle.py`: oracle ceilings (~13 min). `out/top_visible.npy`, `out/top_regions.npz`,
   `out/top_dec100k_truth.npz` (fractional truth on the decimated copy).
 - `tools/phase1_report.py`: end-to-end; `--candidate path.3mf` scores any whole-triangle export.
@@ -50,6 +59,7 @@ F1 dark red = tree AND posts (two distinct parts, one colour). F2 grey = railing
 - Scorer assumes product coupling when both sides are fractional; exact only for whole-triangle candidates.
 
 ## Next step
-Phase 2 step B on approval: per-face features on the decimated copy (normal, through-thickness, multi-scale PCA
-shape at 4 and 12 mm, curvature, height above lowest surface [flagged: orientation]) + per-feature separability
-table, then C (seeded classifier + graph cut, score vs 1/2/3 clicks per region).
+Phase 2 step C on approval: GBM on the features from click neighbourhoods -> per-face probabilities ->
+alpha-expansion graph cut (PyMaxflow) with crease-aware pairwise cost + geodesic seed term. Score on the decimated
+copy under per_region_1/2/3, per_filament, per_type, with and without height; then E (caps), F (full mesh +
+sub-triangle refinement).

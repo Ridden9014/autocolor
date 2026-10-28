@@ -4,3 +4,4 @@ scipy
 open3d
 pytest
 matplotlib
+scikit-learn
