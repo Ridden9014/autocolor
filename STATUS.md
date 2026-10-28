@@ -1,6 +1,8 @@
 # STATUS
 
-**Phase:** 3, part 1 done; **checkpoint 1 for review before any UI work** (`reports/phase3_checkpoint1.md`).
+**Phase:** 3, part 1 done (`reports/phase3_checkpoint1.md`). **Part 2 (click tool) ON HOLD** pending the user's
+timing test: finishing `out/top_autocolor.3mf` in Bambu Studio vs the original hand-paint time. No new work until
+that result is in.
 Top on the full mesh: 93.3 overall (F1 90 / F2 86 / F3 69 / F4 89), exported to `out/top_autocolor.3mf` (copy of
 the painted project, Top paint_color replaced, round-trip verified; needs a Bambu Studio open-check by the user).
 Sub-triangle refinement does not help with per-face labels (-0.2), export is whole-triangle. **Base (held out):
@@ -86,6 +88,19 @@ F1 dark red = tree AND posts (two distinct parts, one colour). F2 grey = railing
   features at <= 12 mm give only 0.92 AUC. Candidate feature: straightness / constant radius over a ~30 mm span
   (a post is a straight constant-radius cylinder, a trunk tapers and bends).
 
+## Method limits as found (Phase 2-3, VERIFIED on Top and Base)
+- **2D inlays are invisible to shape features**: Base's grey engraved pattern on the disc (F2, 3 % of area) has
+  the disc's thickness and normals; IoU 7-16 whatever the clicks. Flat designs are a slicer fill-tool job.
+- **Base generalization is weak**: same method, 71 mean / 55 worst at 27 clicks (Top 92 / 91 at 20), best draw
+  88.6 on the full mesh. Trunk and disc are handled; inlay and bark-textured cut ends are not. The primitive
+  voting rule is fragile (one stray click on a primitive's planar core relabels it). All hyper-parameters were
+  tuned on Top.
+- **Junction seams are unsolved**: rails fused into the loop lattice, posts into rails/loops. Rails never above
+  ~59 IoU on the copy / 69 on the full mesh (ceiling 86 / 94.5 whole-triangle); loops ~82-86; 20-28 % wrong area
+  within 3 mm of post/rail/loop junctions on Top, unchanged by corrections. Sub-triangle refinement cannot help
+  without a sub-triangle-precise label source.
+- Corrections are slow: ~0.1 point per click after the initial seeds; 95 overall was never reached.
+
 ## Open problems
 - PoC never separates rails (F3) from loops (F2): F3 IoU 0. Rails are only 6.2 % of area but 13.7 % of their area
   is in brush-split triangles, so whole-triangle output will cap the rail score; sub-triangle output needed eventually.
@@ -94,6 +109,7 @@ F1 dark red = tree AND posts (two distinct parts, one colour). F2 grey = railing
 - Scorer assumes product coupling when both sides are fractional; exact only for whole-triangle candidates.
 
 ## Next step
-Checkpoint 1 review. If approved: Phase 3 part 2, the PyVista + Qt click tool (100k display, pre-placed primitive
-widgets, brush/nudge, evaluate a full-resolution junction patch else 200k display, export to out/). Then part 3,
-the timed benchmark. Method hyper-parameters are tuned on Top (flagged throughout).
+Waiting on the user's timing test (Bambu Studio finish of `out/top_autocolor.3mf` vs original paint time).
+If the tool is still worth it afterwards: Phase 3 part 2, the PyVista + Qt click tool (100k display, pre-placed
+primitive widgets, brush/nudge, evaluate a full-resolution junction patch else 200k display, export to out/),
+then part 3, the timed benchmark.
