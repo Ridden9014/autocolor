@@ -1,0 +1,57 @@
+excluded invisible: 1464 faces, 0.053% area
+
+=== truth vs truth (sanity, must be 100)  (31s)
+overall agreement: 100.00%  (area-weighted)
+candidate->ref mapping: {0: 0, 1: 1, 2: 2, 3: 3}
+section                       area%     IoU  recall    prec
+F1 #804040                    38.79  100.00  100.00  100.00
+F2 #808080                    17.00  100.00  100.00  100.00
+F3 #C4C400                     6.19  100.00  100.00  100.00
+F4 #BC946B                    38.02  100.00  100.00  100.00
+
+=== oracle A: whole triangles, full mesh  (1s)
+overall agreement: 99.55%  (area-weighted)
+candidate->ref mapping: {0: 0, 1: 1, 2: 2, 3: 3}
+section                       area%     IoU  recall    prec
+F1 #804040                    38.79   99.70   99.81   99.89
+F2 #808080                    17.00   99.34   99.77   99.57
+F3 #C4C400                     6.19   94.54   96.87   97.52
+F4 #BC946B                    38.02   99.12   99.61   99.51
+built depth-2 refinement of 22403 split tris in 347s
+
+=== oracle C: sub-triangle splits depth<=2, full mesh  (1s)
+overall agreement: 99.89%  (area-weighted)
+candidate->ref mapping: {0: 0, 1: 1, 2: 2, 3: 3}
+section                       area%     IoU  recall    prec
+F1 #804040                    38.79   99.90   99.95   99.95
+F2 #808080                    17.00   99.81   99.92   99.90
+F3 #C4C400                     6.19   98.74   99.36   99.37
+F4 #BC946B                    38.02   99.79   99.89   99.90
+built depth-3 refinement of 22403 split tris in 370s
+
+=== oracle C: sub-triangle splits depth<=3, full mesh  (2s)
+overall agreement: 99.94%  (area-weighted)
+candidate->ref mapping: {0: 0, 1: 1, 2: 2, 3: 3}
+section                       area%     IoU  recall    prec
+F1 #804040                    38.79   99.95   99.98   99.97
+F2 #808080                    17.00   99.90   99.96   99.94
+F3 #C4C400                     6.19   99.39   99.66   99.72
+F4 #BC946B                    38.02   99.90   99.95   99.95
+
+=== oracle B: whole triangles on 100k decimated -> full (nearest face)  (0s)
+overall agreement: 99.01%  (area-weighted)
+candidate->ref mapping: {0: 0, 1: 1, 2: 2, 3: 3}
+section                       area%     IoU  recall    prec
+F1 #804040                    38.79   99.23   99.63   99.60
+F2 #808080                    17.00   98.15   99.44   98.70
+F3 #C4C400                     6.19   88.83   91.29   97.06
+F4 #BC946B                    38.02   98.32   99.45   98.86
+
+=== decimated-space score of decimated majority (iteration metric ceiling)
+overall agreement: 98.32%  (area-weighted)
+candidate->ref mapping: {0: 0, 1: 1, 2: 2, 3: 3}
+section                       area%     IoU  recall    prec
+F1 #804040                    39.22   97.91   98.29   99.60
+F2 #808080                    17.21   97.14   98.75   98.36
+F3 #C4C400                     6.06   86.31   91.12   94.23
+F4 #BC946B                    37.51   96.97   99.31   97.63

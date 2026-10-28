@@ -1,8 +1,14 @@
 # STATUS
 
-**Phase:** 1 complete (ground truth + scorer + baseline). Phase 2 not started; plan needed first.
+**Phase:** 2, step A done (infrastructure + oracle ceilings); **stopped for review before step B** (features).
+Plan: A infra -> B features + separability table -> C seeded classifier + graph cut -> E cap detector ->
+F confirm on full mesh with sub-triangle refinement. D (automatic track) skipped by decision. Targets: overall >= 95,
+every IoU >= 90, scored identity (no mapping), invisible faces excluded.
 **Last score (PoC baseline, best mapping):** overall 83.70 %. Per-section IoU: F1 tree+posts 76.6, F2 loops 72.0,
 F3 rails 0.0, F4 deck 77.4. Details in `reports/phase1.md`.
+**Oracle ceilings** (`reports/phase2_checkpoint_A.md`): whole-triangle full mesh 99.55 overall, F3 rails 94.5;
+depth-2 splits 98.7 on rails; decimated 100k -> full only 88.8 on rails, so rails must be confirmed on the full mesh.
+Top is solid (not hollow, VERIFIED); invisible faces 0.053 % of area.
 **Env:** Python 3.13.3, `.venv` (trimesh, numpy, scipy, open3d, matplotlib, pytest). `requirements.txt` unpinned.
 
 ## Inputs (refs/, gitignored, 111 MB; copy by hand on a new machine)
@@ -22,6 +28,12 @@ F3 rails 0.0, F4 deck 77.4. Details in `reports/phase1.md`.
 - `autocolor/score.py`: overlap matrix, label mapping (`best` many-to-one headline, `one2one` Hungarian), per-section
   IoU / recall / precision, overall agreement.
 - `autocolor/render.py`: open3d decimation + matplotlib 2-view preview.
+- `autocolor/paint.py` also: split geometry (perform_split port), `leaf_states_at`, `build_tree`, lattice samples.
+- `autocolor/score.py` also: `score_paint` exact point-sampled scoring, `identity` mode.
+- `autocolor/transfer.py`: truth onto decimated mesh, labels back to full mesh (closest face).
+- `autocolor/clicks.py`: regions (>= 20 mm^2 components), boundary hops, click sampling. 35 regions on Top.
+- `tools/phase2_oracle.py`: oracle ceilings (~13 min). `out/top_visible.npy`, `out/top_regions.npz`,
+  `out/top_dec100k_truth.npz` (fractional truth on the decimated copy).
 - `tools/phase1_report.py`: end-to-end; `--candidate path.3mf` scores any whole-triangle export.
 - Outputs in `out/` (gitignored): `top_truth.npz` (M, areas, V, T), `base_truth.npz`, `top_dec100k.npz`
   (decimated copy + `src` index into full-mesh triangles), `top_truth_preview.png`.
@@ -38,5 +50,6 @@ F1 dark red = tree AND posts (two distinct parts, one colour). F2 grey = railing
 - Scorer assumes product coupling when both sides are fractional; exact only for whole-triangle candidates.
 
 ## Next step
-Phase 2 plan: automatic sectioning of Top into tree+posts / loops / rails / deck that carries over to Base.
-Plan first, wait for approval.
+Phase 2 step B on approval: per-face features on the decimated copy (normal, through-thickness, multi-scale PCA
+shape at 4 and 12 mm, curvature, height above lowest surface [flagged: orientation]) + per-feature separability
+table, then C (seeded classifier + graph cut, score vs 1/2/3 clicks per region).
