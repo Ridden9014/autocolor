@@ -1,7 +1,12 @@
 # STATUS
 
-**Phase:** 2, steps A and B done (infrastructure, oracle ceilings, features + separability);
-**stopped for review before step C** (seeded classifier + graph cut). Separability: `reports/phase2_checkpoint_B.md`.
+**Phase:** 2, step C run; **stopped for review, targets NOT met** (`reports/phase2_checkpoint_C.md`).
+Seeded method (per-click KDE prior + feature-aware Potts graph cut + through-solid links), decimated space:
+per_type 88.6 mean / 86.7 worst (rails 42); per_filament 81; per_region_1 72; per_region_2 86; per_region_3 83.
+Best single draws 92-94. Rails never above 57. One click does label all posts / loop sides / caps; not all rails.
+Bounding facts: GBM on representative labels = 97.0, so features suffice and the click-to-training bootstrap is
+the whole problem; the deck underside (18 % of area, textured, thin) is reached by no click and looks like loops.
+Steps A and B: `reports/phase2_checkpoint_A.md`, `reports/phase2_checkpoint_B.md`.
 Combined features >= 0.99 AUC on every section pair with height, >= 0.92 without; rails/deck is 0.924 without
 height (tan_aniso, plan_12, curv_3 carry it), 0.995 with. Posts vs tree is the weak pair (0.92) but same filament.
 Caps: ext_12 / sph_12 ~0.98-1.0 vs deck and F1.
@@ -41,6 +46,11 @@ Top is solid (not hollow, VERIFIED); invisible faces 0.053 % of area.
 - `autocolor/clicks.py` also: `part_types` (simulator-only area grouping, FLAGGED), conditions per_region_1/2/3,
   per_filament (4 clicks), per_type (6 clicks).
 - `tools/phase2_features.py`: separability table (`reports/phase2_separability.txt`).
+- `autocolor/seeded.py`: `FaceGraph` (adjacency, dihedrals, geodesic, through_links), `seeded_labels` (patch
+  method, the one reported), `seeded_segments` (over-segmentation variant, worse), `alpha_expansion` (PyMaxflow,
+  verified vs brute force), `_fit_predict` (gbm / logreg / kde / proto priors).
+- `tools/phase2_seeded.py`: score table runner (`--conditions`, `--draws`, `--height`, `--save-best`,
+  hyper-parameters), writes `out/seeded_<cond>_<height>.npz`.
 - `tools/phase2_oracle.py`: oracle ceilings (~13 min). `out/top_visible.npy`, `out/top_regions.npz`,
   `out/top_dec100k_truth.npz` (fractional truth on the decimated copy).
 - `tools/phase1_report.py`: end-to-end; `--candidate path.3mf` scores any whole-triangle export.
@@ -51,6 +61,11 @@ Top is solid (not hollow, VERIFIED); invisible faces 0.053 % of area.
 F1 dark red = tree AND posts (two distinct parts, one colour). F2 grey = railing loops. F3 yellow = rails
 (top/bottom bars). F4 tan = deck + cut ends of posts/branches. Unpainted 9 % of area -> default F1 (verified).
 
+## Future items (not now)
+- Posts vs tree separation will matter once 8-9 filament machines allow different colours for them; shape
+  features at <= 12 mm give only 0.92 AUC. Candidate feature: straightness / constant radius over a ~30 mm span
+  (a post is a straight constant-radius cylinder, a trunk tapers and bends).
+
 ## Open problems
 - PoC never separates rails (F3) from loops (F2): F3 IoU 0. Rails are only 6.2 % of area but 13.7 % of their area
   is in brush-split triangles, so whole-triangle output will cap the rail score; sub-triangle output needed eventually.
@@ -59,7 +74,6 @@ F1 dark red = tree AND posts (two distinct parts, one colour). F2 grey = railing
 - Scorer assumes product coupling when both sides are fractional; exact only for whole-triangle candidates.
 
 ## Next step
-Phase 2 step C on approval: GBM on the features from click neighbourhoods -> per-face probabilities ->
-alpha-expansion graph cut (PyMaxflow) with crease-aware pairwise cost + geodesic seed term. Score on the decimated
-copy under per_region_1/2/3, per_filament, per_type, with and without height; then E (caps), F (full mesh +
-sub-triangle refinement).
+Review of checkpoint C. Proposed (not started): a texture-robust part linking (through-solid links from an
+offset surface / cone), area-share-weighted self-training with change limits, or an interactive click protocol
+(click the largest wrong region, repeat) with a clicks-to-target curve. E (caps) and F (full mesh) wait.

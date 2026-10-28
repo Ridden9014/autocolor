@@ -124,15 +124,20 @@ def compute_features(V, T, seed=0, verbose=True):
     if verbose:
         print(f'  sdf {time.time() - t0:.0f}s')
 
-    # tangent extents from a point pushed inside by min(1 mm, thick_min/2)
-    depth = np.minimum(1.0, F['thick_min'] / 2).astype(np.float32)
+    # tangent extents from points pushed inside the solid at several depths
+    # (0.5..3 mm and 0.4*thick_min, each capped at 0.45*thick_min); per
+    # direction take the MAX over depths so surface texture (plank grooves,
+    # bark) does not read as a narrow part.
     kt = 8
     dt = _tangent_dirs(N, kt // 2).reshape(-1, 3)
-    ot = np.repeat(C - depth[:, None] * N, kt, 0)
-    tx = cast.exit_distance(ot, dt).reshape(n, kt)
-    tx = np.where(np.isnan(tx), np.nanmax(tx), tx)
-    # pair opposite directions: extent across = d(+) + d(-)
-    across = tx[:, :kt // 2] + tx[:, kt // 2:]
+    across = np.zeros((n, kt // 2), np.float32)
+    for depth in (0.5, 1.0, 2.0, 3.0, None):
+        dep = np.full(n, depth, np.float32) if depth else (0.4 * F['thick_min']).astype(np.float32)
+        dep = np.minimum(dep, 0.45 * F['thick_min']).astype(np.float32)
+        ot = np.repeat(C - dep[:, None] * N, kt, 0)
+        tx = cast.exit_distance(ot, dt).reshape(n, kt)
+        tx = np.where(np.isnan(tx), np.nanmax(tx), tx)
+        across = np.maximum(across, tx[:, :kt // 2] + tx[:, kt // 2:])   # extent = d(+) + d(-)
     F['tan_min'] = across.min(1)
     F['tan_med'] = np.median(across, 1)
     F['tan_max'] = across.max(1)
