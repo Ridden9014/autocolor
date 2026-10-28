@@ -1,0 +1,7 @@
+full mesh: 1000954 faces, FaceGraph 2s
+through_links 1s (116988 links)
+pairwise weights 0s
+one geodesic (plain) 0.4s
+one prototype density over 1M faces 2.4s
+alpha-expansion 1 cycle, 4 labels, 1M nodes: 3s
+warm-started cycle: 3s

@@ -1,6 +1,11 @@
 # STATUS
 
-**Phase:** 2, step C run; **stopped for review, targets NOT met** (`reports/phase2_checkpoint_C.md`).
+**Phase:** 2, step C + interactive curve run; **stopped for review, targets NOT met**
+(`reports/phase2_checkpoint_C2_interactive.md`). Click-and-correct from per_type: 88.6 -> 91.7 (raw) over 34
+corrections, clicks-to-90 mean 20 / worst 37 (1 of 5 draws never), 95 never reached, rails stuck ~55.
+0.24 s per click on the 100k copy; ~6-12 s estimated on the full mesh. Bottom-surface rule (down-facing, nothing
+below, label from the surface above through the solid within 7 mm; orientation-flagged) costs nothing on the truth
+but -0.5 on the method because it copies the deck top's errors. Step C details: `reports/phase2_checkpoint_C.md`.
 Seeded method (per-click KDE prior + feature-aware Potts graph cut + through-solid links), decimated space:
 per_type 88.6 mean / 86.7 worst (rails 42); per_filament 81; per_region_1 72; per_region_2 86; per_region_3 83.
 Best single draws 92-94. Rails never above 57. One click does label all posts / loop sides / caps; not all rails.
@@ -49,6 +54,9 @@ Top is solid (not hollow, VERIFIED); invisible faces 0.053 % of area.
 - `autocolor/seeded.py`: `FaceGraph` (adjacency, dihedrals, geodesic, through_links), `seeded_labels` (patch
   method, the one reported), `seeded_segments` (over-segmentation variant, worse), `alpha_expansion` (PyMaxflow,
   verified vs brute force), `_fit_predict` (gbm / logreg / kde / proto priors).
+- `autocolor/interactive.py`: `InteractiveSession` (incremental clicks: patch hard seeds, per-click prototype
+  with optional reach/gate, warm-started cut), `largest_wrong_region`. `autocolor/rules.py`: bottom surface
+  detection + rule. `tools/phase2_interactive.py`: curve runner (`--draws`, `--max-clicks`, `--reach`, `--gate`).
 - `tools/phase2_seeded.py`: score table runner (`--conditions`, `--draws`, `--height`, `--save-best`,
   hyper-parameters), writes `out/seeded_<cond>_<height>.npz`.
 - `tools/phase2_oracle.py`: oracle ceilings (~13 min). `out/top_visible.npy`, `out/top_regions.npz`,
@@ -74,6 +82,6 @@ F1 dark red = tree AND posts (two distinct parts, one colour). F2 grey = railing
 - Scorer assumes product coupling when both sides are fractional; exact only for whole-triangle candidates.
 
 ## Next step
-Review of checkpoint C. Proposed (not started): a texture-robust part linking (through-solid links from an
-offset surface / cone), area-share-weighted self-training with change limits, or an interactive click protocol
-(click the largest wrong region, repeat) with a clicks-to-target curve. E (caps) and F (full mesh) wait.
+Review of checkpoint C2. Proposed (held by decision until the curve was seen, now the recommended next step):
+texture-robust part linking (offset-surface / cone through-solid links; rails linked across width, not into the
+lattice), then re-run the interactive curve (3 min). E (caps) and F (full mesh) wait.
