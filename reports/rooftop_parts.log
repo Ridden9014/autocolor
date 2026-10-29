@@ -1,0 +1,14 @@
+rooftop: 1396424 tris (0 degenerate), 698212 merged verts, area 88143 mm2, extent [135.9 135.9 198.3], load 2.5s
+invisible: 5805 faces, 9.00% area, 1s
+graph 0s
+oversegment: 13695 raw segments in 6s
+parts after merge (min-part 800.0): 28 components, 28 of them >= 20 mm2; covering 100.0% of area
+primitives 3 in 5s, claimed 24% of area
+   0 slab thick 2.8            17142 mm2  parts #0:67% #4:18% #22:6%
+   1 cyl  r 12.8 h 31           1981 mm2  parts #21:35% #10:31% #7:20%
+   2 cyl  r 14.3 h 41           2302 mm2  parts #7:29% #13:28% #10:22%
+rooftop: 1396424 tris (0 degenerate), 698212 merged verts, area 88143 mm2, extent [135.9 135.9 198.3], load 2.4s
+wrote reports/rooftop_parts_view1.png: 26 of 28 parts visible
+wrote reports/rooftop_parts_view2.png: 25 of 28 parts visible
+wrote reports/rooftop_parts_view3.png: 27 of 28 parts visible
+wrote reports/rooftop_parts_view4.png: 27 of 28 parts visible

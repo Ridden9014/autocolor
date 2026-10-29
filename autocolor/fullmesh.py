@@ -84,3 +84,28 @@ def export_project(src_3mf, out_path, part_file, paint):
             data = s2.encode() if info.filename == part_file else zin.read(info.filename)
             zout.writestr(info, data)
     return out_path
+
+
+def export_bare(out_path, V, T, paint, name='autocolor'):
+    """Write a plain 3MF (one mesh object, per-triangle paint_color +
+    slic3rpe:mmu_segmentation, same layout as the chat PoC export that Bambu
+    Studio imported). No project metadata: filament colours are set in the
+    slicer. out_path must be outside refs/."""
+    assert 'refs' not in os.path.normpath(out_path).split(os.sep), out_path
+    head = ('<?xml version="1.0" encoding="UTF-8"?>\n'
+            '<model unit="millimeter" xml:lang="en-US" xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02" '
+            'xmlns:slic3rpe="http://schemas.slic3r.org/3mf/2017/06">\n'
+            f'<resources><object id="1" type="model" name="{name}"><mesh>\n<vertices>\n')
+    verts = ''.join(f'<vertex x="{x:.5f}" y="{y:.5f}" z="{z:.5f}"/>\n' for x, y, z in V)
+    tris = ''.join(f'<triangle v1="{a}" v2="{b}" v3="{c}"' + (f' paint_color="{p}" slic3rpe:mmu_segmentation="{p}"' if p else '') + '/>\n'
+                   for (a, b, c), p in zip(T.tolist(), paint))
+    tail = '</triangles>\n</mesh></object></resources>\n<build><item objectid="1"/></build>\n</model>'
+    types = ('<?xml version="1.0" encoding="UTF-8"?>\n<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+             '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+             '<Default Extension="model" ContentType="application/vnd.ms-package.3dmanufacturing-3dmodel+xml"/></Types>')
+    rels = ('<?xml version="1.0" encoding="UTF-8"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+            '<Relationship Target="/3D/3dmodel.model" Id="rel0" Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/></Relationships>')
+    with zipfile.ZipFile(out_path, 'w', zipfile.ZIP_DEFLATED) as z:
+        z.writestr('[Content_Types].xml', types)
+        z.writestr('_rels/.rels', rels)
+        z.writestr('3D/3dmodel.model', head + verts + '</vertices>\n<triangles>\n' + tris + tail)

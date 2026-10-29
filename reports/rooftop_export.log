@@ -1,0 +1,12 @@
+decimated area % per filament: [60.7  6.6 32.7  0. ]
+transfer 3s
+full-mesh cut 4s, changed 0.01% of faces
+  ring thick: 43205 faces, 2923 mm2 -> F4
+  ring A: 6923 faces, 428 mm2 -> F4
+  ring B: 6786 faces, 478 mm2 -> F4
+  ring C: 3501 faces, 252 mm2 -> F4
+  ring D: 2338 faces, 190 mm2 -> F4
+full-mesh area % per filament: [55.91  6.57 32.67  4.85]
+exported out/rooftop_autocolor.3mf (23.5 MB) in 4s
+re-read: 1396424 tris, strings identical: True, labels identical: True; VERIFIED
+wrote reports/rooftop_export_preview.png

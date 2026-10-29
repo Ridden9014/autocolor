@@ -1,6 +1,20 @@
 # STATUS
 
-**Phase:** 3, part 1 done (`reports/phase3_checkpoint1.md`). **Part 2 (click tool) ON HOLD** pending the user's
+**Phase 4 (new model, no truth): Rooftop of the Wizards Arcane Treasury tower**, `reports/rooftop_parts.md`.
+STL only (1.40 M tris, 88k mm^2; no Bambu project in refs/, export will be a bare 3MF from the STL). Working copy
+200k (within 0.05 mm of the full surface; features 13 min, vs 28 min / 1 h 51 at 300k / 400k). Top's
+oversegmentation + greedy merge at 800 mm^2 -> 28 parts, numbered in `reports/rooftop_parts_view{1-4}.png`.
+Cone courses and the finial come out as parts; the shingle rows and the skirt lattice are shallow relief the
+method cannot split (flagged). First export done: `out/rooftop_autocolor.3mf` (bare 3MF from the STL, 4 filaments,
+rings F4 by MANUAL band rules, re-read verified) but built on a mapping made from mis-labelled views: 19 % of the
+area is F1 below the thick ring (socket wall 11, hidden annulus 6, step 17/24, lower halves of 1 and 3). Views
+regenerated with exact visibility + a from-below view; **waiting for the corrected mapping of parts 1, 3, 6, 11,
+17, 24**, then rerun `tools/rooftop_export.py`. Tools: `tools/rooftop_parts.py` (stages res / parts / views,
+`--sweep`), `tools/rooftop_export.py` (`--rings all|D|none`), `autocolor/meshio.py` (STL loader),
+`fullmesh.export_bare` (plain 3MF writer).
+Then MidSection and Base of the same tower.
+
+**Phase 3:** part 1 done (`reports/phase3_checkpoint1.md`). **Part 2 (click tool) ON HOLD** pending the user's
 timing test: finishing `out/top_autocolor.3mf` in Bambu Studio vs the original hand-paint time. No new work until
 that result is in.
 Top on the full mesh: 93.3 overall (F1 90 / F2 86 / F3 69 / F4 89), exported to `out/top_autocolor.3mf` (copy of
@@ -109,7 +123,8 @@ F1 dark red = tree AND posts (two distinct parts, one colour). F2 grey = railing
 - Scorer assumes product coupling when both sides are fractional; exact only for whole-triangle candidates.
 
 ## Next step
-Waiting on the user's timing test (Bambu Studio finish of `out/top_autocolor.3mf` vs original paint time).
+Rooftop: corrected mapping for parts 1, 3, 6, 11, 17, 24 (see reports/rooftop_parts.md section 5), rerun the export.
+Tool build: waiting on the user's timing test (Bambu Studio finish of `out/top_autocolor.3mf` vs original paint time).
 If the tool is still worth it afterwards: Phase 3 part 2, the PyVista + Qt click tool (100k display, pre-placed
 primitive widgets, brush/nudge, evaluate a full-resolution junction patch else 200k display, export to out/),
 then part 3, the timed benchmark.

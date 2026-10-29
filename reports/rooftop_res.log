@@ -1,0 +1,7 @@
+rooftop: 1396424 tris (0 degenerate), 698212 merged verts, area 88143 mm2, extent [135.9 135.9 198.3], load 4.2s
+200k: 200000 tris in 26s; full->dec distance: area within 0.25 mm 100.00%, within 0.5 mm 100.00%, p99 0.02 max 0.05 mm; dec edge median 0.75 p90 2.01
+     features 753s
+300k: 300000 tris in 14s; full->dec distance: area within 0.25 mm 100.00%, within 0.5 mm 100.00%, p99 0.01 max 0.04 mm; dec edge median 0.59 p90 1.60
+     features 1676s
+400k: 400000 tris in 13s; full->dec distance: area within 0.25 mm 100.00%, within 0.5 mm 100.00%, p99 0.01 max 0.03 mm; dec edge median 0.50 p90 1.37
+     features 6676s
