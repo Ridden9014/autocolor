@@ -79,7 +79,7 @@ VERIFIED from the table below, names INFERRED):
 - Part counts and the 800 mm^2 floor were chosen for this model's size (88k mm^2); the floor scales with
   model area, not coordinates.
 
-## 5. Export, first pass (`tools/rooftop_export.py --rings all`, log `rooftop_export.log`, VERIFIED)
+## 5. Export (`tools/rooftop_export.py --rings all --below-ring F3`, log `rooftop_export.log`, VERIFIED)
 
 Mapping as given by the user from the first (wrong) views: F1 = 21 13 2 12 18 1 5 6 9 11 20 3 23 14 27 24 17,
 F2 = 10 7, F3 = 4 8 25 26 15 19 16 0 22. **Rings -> F4 by MANUAL band rules** (height above the base and radius
@@ -91,8 +91,9 @@ Pipeline: decimated labels -> closest-face transfer (3 s) -> full-mesh crease cu
 triangle order, same layout as the PoC export). Re-read: 1,396,424 triangles, strings and labels identical.
 **4 filaments.** Area: F1 55.9 %, F2 6.6 %, F3 32.7 %, F4 4.9 %. Preview: `rooftop_export_preview.png`.
 
-**Known defect of this export (from the misread views):** 16,899 mm^2 = 19 % of the surface is F1 below the thick
-ring (z < 33.5 mm): the socket wall 11, the hidden annulus 6, the step ring 17 and its under-lip 24, and the
-lower parts of 1 and 3. Visible in the preview as red patches on the skirt below the ring. Needs a corrected
-mapping for parts 1, 3, 6, 11, 17, 24 (1 and 3 straddle the ring: they can be split at z 33.5 by the same band
-rule if their lower part should follow the skirt).
+**Second MANUAL rule (user's decision after the first pass): everything below the thick ring (z < 33.5 mm)
+that is not F4 -> F3.** This covers the socket wall 11, the hidden annulus 6, the step ring 17 / under-lip 24 and
+the lower portions of parts 1 and 3 (which straddle the ring); 411,926 faces, 16,899 mm^2 moved from F1 to F3.
+Everything above the ring stays as mapped. Final area: **F1 36.7 %, F2 6.6 %, F3 51.8 %, F4 4.9 %**; 4 filaments.
+The first pass (without this rule) had those 19 % as F1, from a mapping made off the mis-labelled first views.
+Both ring bands and the below-ring cut are hand selections in this model's coordinates, not method results.

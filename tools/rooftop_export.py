@@ -3,7 +3,7 @@ mesh -> crease cut -> bare whole-triangle 3MF in out/. The band rules are a
 hand selection in this model's coordinates (height above the base, radius
 about the bounding-box axis), not a method result.
 
-  python tools/rooftop_export.py [--rings all|D|none] [--out out/rooftop_autocolor.3mf]
+  python tools/rooftop_export.py [--rings all|D|none] [--below-ring F3|none] [--out out/rooftop_autocolor.3mf]
 """
 import argparse
 import os
@@ -25,6 +25,8 @@ ap.add_argument('--stl', default='refs/SD_RPG_WizardsArcaneTreasuryDiceTower-Roo
 ap.add_argument('--n', type=int, default=200_000)
 ap.add_argument('--rings', default='all', choices=['all', 'D', 'none'])
 ap.add_argument('--out', default='out/rooftop_autocolor.3mf')
+ap.add_argument('--below-ring', default='F3', choices=['F3', 'none'],
+                help='MANUAL rule: everything below the thick ring (z < 33.5) not already F4 -> F3')
 args = ap.parse_args()
 assert 'refs' not in os.path.normpath(args.out).split(os.sep)
 
@@ -67,6 +69,11 @@ for name in use:
     sel = (C[:, 2] >= z0) & (C[:, 2] < z1) & (r >= rmin)
     print(f'  ring {name}: {sel.sum()} faces, {A[sel].sum():.0f} mm2 -> F4')
     lab_c[sel] = 4
+if args.below_ring == 'F3':
+    sel = (C[:, 2] < RINGS['thick'][0]) & (lab_c != 4) & (lab_c != 3)
+    print(f'  below-ring rule (z < {RINGS["thick"][0]}, not F4) -> F3: {sel.sum()} faces, {A[sel].sum():.0f} mm2 changed '
+          f'(from F1 {A[sel & (lab_c == 1)].sum():.0f}, F2 {A[sel & (lab_c == 2)].sum():.0f} mm2)')
+    lab_c[sel] = 3
 print('full-mesh area % per filament:', np.round(100 * np.bincount(lab_c, weights=A, minlength=K + 1)[1:] / A.sum(), 2))
 np.save('out/rooftop_full_labels.npy', lab_c)
 

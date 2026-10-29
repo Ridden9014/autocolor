@@ -5,11 +5,11 @@ STL only (1.40 M tris, 88k mm^2; no Bambu project in refs/, export will be a bar
 200k (within 0.05 mm of the full surface; features 13 min, vs 28 min / 1 h 51 at 300k / 400k). Top's
 oversegmentation + greedy merge at 800 mm^2 -> 28 parts, numbered in `reports/rooftop_parts_view{1-4}.png`.
 Cone courses and the finial come out as parts; the shingle rows and the skirt lattice are shallow relief the
-method cannot split (flagged). First export done: `out/rooftop_autocolor.3mf` (bare 3MF from the STL, 4 filaments,
-rings F4 by MANUAL band rules, re-read verified) but built on a mapping made from mis-labelled views: 19 % of the
-area is F1 below the thick ring (socket wall 11, hidden annulus 6, step 17/24, lower halves of 1 and 3). Views
-regenerated with exact visibility + a from-below view; **waiting for the corrected mapping of parts 1, 3, 6, 11,
-17, 24**, then rerun `tools/rooftop_export.py`. Tools: `tools/rooftop_parts.py` (stages res / parts / views,
+method cannot split (flagged). Export done: `out/rooftop_autocolor.3mf` (bare 3MF from the STL, 4 filaments, F1 36.7 / F2 6.6 / F3 51.8 / F4 4.9 %
+of area, re-read verified). Two MANUAL rules in this model's coordinates on top of the user's part mapping: rings
+-> F4 by height/radius bands, everything below the thick ring (z < 33.5) not F4 -> F3. Needs the user's Bambu
+Studio load check. Next model: MidSection, then Base of the same tower (STLs in refs/).
+Tools: `tools/rooftop_parts.py` (stages res / parts / views,
 `--sweep`), `tools/rooftop_export.py` (`--rings all|D|none`), `autocolor/meshio.py` (STL loader),
 `fullmesh.export_bare` (plain 3MF writer).
 Then MidSection and Base of the same tower.
@@ -123,7 +123,7 @@ F1 dark red = tree AND posts (two distinct parts, one colour). F2 grey = railing
 - Scorer assumes product coupling when both sides are fractional; exact only for whole-triangle candidates.
 
 ## Next step
-Rooftop: corrected mapping for parts 1, 3, 6, 11, 17, 24 (see reports/rooftop_parts.md section 5), rerun the export.
+Rooftop exported; user loads `out/rooftop_autocolor.3mf` in Bambu Studio (4 filaments). Then MidSection.
 Tool build: waiting on the user's timing test (Bambu Studio finish of `out/top_autocolor.3mf` vs original paint time).
 If the tool is still worth it afterwards: Phase 3 part 2, the PyVista + Qt click tool (100k display, pre-placed
 primitive widgets, brush/nudge, evaluate a full-resolution junction patch else 200k display, export to out/),

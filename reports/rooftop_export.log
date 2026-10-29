@@ -6,7 +6,8 @@ full-mesh cut 4s, changed 0.01% of faces
   ring B: 6786 faces, 478 mm2 -> F4
   ring C: 3501 faces, 252 mm2 -> F4
   ring D: 2338 faces, 190 mm2 -> F4
-full-mesh area % per filament: [55.91  6.57 32.67  4.85]
+  below-ring rule (z < 33.5, not F4) -> F3: 411926 faces, 16899 mm2 changed (from F1 16899, F2 0 mm2)
+full-mesh area % per filament: [36.74  6.57 51.84  4.85]
 exported out/rooftop_autocolor.3mf (23.5 MB) in 4s
 re-read: 1396424 tris, strings identical: True, labels identical: True; VERIFIED
 wrote reports/rooftop_export_preview.png
